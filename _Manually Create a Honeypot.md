@@ -9,6 +9,7 @@ sudo nano /usr/local/bin/tcp-6969-honeypot.py
 Then paste the following contents to the nano shell
 
 ~~~
+#!/usr/bin/env python3
 import asyncio
 import datetime
 import os
@@ -154,7 +155,7 @@ sudo chmod +x /usr/local/bin/tcp-6969-honeypot.py
 !@NetOps
 sudo useradd -r -s /sbin/nologin honeypot69 || true
 sudo chown -R honeypot69:honeypot69 /var/log/tcp-6969-honeypot
-
+sudo chown -R honeypot69:honeypot69 /usr/local/bin/tcp-6969-honeypot.py 
 
 4. Create a Systemd Service unit file
 
@@ -192,6 +193,7 @@ WantedBy=multi-user.target
 5. Then start the service
 
 !@NetOps
+chmod 755 tcp-6969-honeypot.service 
 sudo systemctl daemon-reload
 sudo systemctl start tcp-6969-honeypot.service
 sudo systemctl status tcp-6969-honeypot.service --no-pager
