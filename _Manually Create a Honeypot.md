@@ -6,7 +6,7 @@ Manually Create a Honeypot Server using Python
 sudo nano /usr/local/bin/tcp-6969-honeypot.py
 ~~~
 
-Then paste the following contents to the nano shell
+Then paste the following contents to the nano shell.
 
 ~~~
 #!/usr/bin/env python3
