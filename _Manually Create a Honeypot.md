@@ -26,7 +26,7 @@ os.makedirs(BASE_LOG, exist_ok=True)
 def hexdump(data: bytes) -> str:
 
   ### CONVERT RAW BYTES TO HEX STRINGS
-  hexs: binascii.hexlify(data).decode('ascii')
+  hexs = binascii.hexlify(data).decode('ascii')
   
   ### LOOP 32 CHAR CHUNKS TO BE A HUMAN READABLE DATA
   lines = []
