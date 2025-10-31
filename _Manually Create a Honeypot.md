@@ -8,7 +8,7 @@ sudo nano /usr/local/bin/tcp-6969-honeypot.py
 
 Then paste the following contents to the nano shell.
 
-~~~import asyncio
+~~~
 #!/usr/bin/env python3
 import asyncio
 import datetime
@@ -72,41 +72,41 @@ async def handle(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
   ### DUMP RAW AND HEX DATA
   raw_file = sess_dir / "raw.bin"
   hexd_file = sess_dir / "hexdump.txt"
+  try:
+    with raw_file.open("ab") as rb, hexd_file.open("a") as hf:
+      while True:
+        data = await asyncio.wait_for(reader.read(4096), timeout=300.0)
+        if not data:
+          break
+        ts = datetime.datetime.utcnow().isoformat() + "Z"
+        rb.write(data)
+        hf.write(f"\n-- {ts} --\n")
+        hf.write(hexdump(data) + "\n")
+        
+        ### RECORD READABLE COPY
+        printable = ''.join((chr(x) if 32 <= x < 127 else '.') for x in data)
+        (sess_dir / "printable.log").open("a").write(f"{ts} {printable}\n")
+        
+        ### SEND TARPITTED RESPONSE
+        try:
+          writer.write(b"OK\r\n")
+          await writer.drain()
+        except Exception:
+          break
+  except asyncio.TimeoutError:
+    print(f"[-] connection timed out {ip}:{port}")
+  except Exception as e:
+    print(f"[-] session error {e}")
+  finally:
     try:
-      with raw_file.open("ab") as rb, hexd_file.open("a") as hf:
-        while True:
-          data = await asyncio.wait_for(reader.read(4096), timeout=300.0)
-          if not data:
-            break
-          ts = datetime.datetime.utcnow().isoformat() + "Z"
-          rb.write(data)
-          hf.write(f"\n-- {ts} --\n")
-          hf.write(hexdump(data) + "\n")
-          
-          ### RECORD READABLE COPY
-          printable = ''.join((chr(x) if 32 <= x < 127 else '.') for x in data)
-          (sess_dir / "printable.log").open("a").write(f"{ts} {printable}\n")
-          
-          ### SEND TARPITTED RESPONSE
-          try:
-            writer.write(b"OK\r\n")
-            await writer.drain()
-          except Exception:
-            break
-    except asyncio.TimeoutError:
-      print(f"[-] connection timed out {ip}:{port}")
-    except Exception as e:
-      print(f"[-] session error {e}")
-    finally:
-      try:
-        writer.close()
-        await writer.wait_closed()
-      except Exception:
-        pass
-      end = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-      with meta_file.open("a") as mf:
-        mf.write(f"end: {end}\n")
-      print(f"[+] closed {ip}:{port} -> {sess_dir}")
+      writer.close()
+      await writer.wait_closed()
+    except Exception:
+      pass
+    end = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    with meta_file.open("a") as mf:
+      mf.write(f"end: {end}\n")
+    print(f"[+] closed {ip}:{port} -> {sess_dir}")
 
 
   ### TCP HANDLER
