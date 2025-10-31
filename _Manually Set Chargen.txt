@@ -1,0 +1,59 @@
+### Step 1 - Create python script to output random chars for chargen port.
+~~~
+sudo tee /usr/local/bin/chargen.py <<'EOF'
+#!/usr/bin/env python3
+import socket, itertools, string
+
+HOST = "0.0.0.0"
+PORT = 19
+chars = itertools.cycle((string.printable).encode())
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((HOST, PORT))
+    s.listen()
+    while True:
+        conn, addr = s.accept()
+        print(f"Connection from {addr}")
+        while True:
+            try:
+                conn.send(bytes([next(chars)]))
+            except:
+                conn.close()
+                break
+EOF
+~~~
+
+<br>
+
+### Step 2 - Modify permissions
+~~~
+sudo chmod +x /usr/local/bin/chargen.py
+~~~
+
+<br>
+
+### Step 3 - Set Systemd for Chargen Port Service
+~~~
+sudo tee /etc/systemd/system/chargen.service <<EOF
+[Unit]
+Description=TCP CHARGEN Test Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/local/bin/chargen.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+~~~
+
+<br>
+
+### Step 4 - Start Service
+
+~~~
+sudo systemctl daemon-reload
+sudo systemctl enable chargen
+~~~
