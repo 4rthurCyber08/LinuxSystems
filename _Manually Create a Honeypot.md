@@ -8,9 +8,7 @@ sudo nano /usr/local/bin/tcp-6969-honeypot.py
 
 Then paste the following contents to the nano shell.
 
-~~~
-#!/usr/bin/env python3
-import asyncio
+~~~import asyncio
 import datetime
 import os
 import argparse
