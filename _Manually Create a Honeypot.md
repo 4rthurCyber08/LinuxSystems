@@ -1,12 +1,16 @@
-Manually Create a Honeypot Server using Python
+## Manually Create a Honeypot Server using Python
 
-1. Create a python file for the honeypot operation.
+### 1. Create a python file for the honeypot operation.
 ~~~
 !@NetOps
 sudo nano /usr/local/bin/tcp-6969-honeypot.py
 ~~~
 
+<br>
+
 Then paste the following contents to the nano shell.
+
+<br>
 
 ~~~
 #!/usr/bin/env python3
@@ -130,6 +134,8 @@ if __name__ == "__main__":
     pass
 ~~~
 
+<br>
+
 > [!NOTE]
 > Imports
 > - asyncio: event loop + async IO (handles many connections efficiently).
@@ -138,31 +144,53 @@ if __name__ == "__main__":
 > - argparse: parse CLI arguments (--host, --port).
 > - binascii: binary ⇄ hex conversion.
 
+&nbsp;
+---
+&nbsp;
 
-2. Create the directory for the log files.
-
+### 2. Create the directory for the log files.
+~~~
 !@NetOps
 sudo mkdir /var/log/tcp-6969-honeypot
+~~~
 
+<br>
 
 Make the file excecutable
 
+<br>
+
+~~~
 !@NetOps
 sudo chmod +x /usr/local/bin/tcp-6969-honeypot.py
+~~~
 
+&nbsp;
+---
+&nbsp;
 
-3. Prevent the honeypot server from being conpronised by assigning a nologin account to it.
-
+### 3. Prevent the honeypot server from being conpronised by assigning a nologin account to it.
+~~~
 !@NetOps
 sudo useradd -r -s /sbin/nologin honeypot69 || true
 sudo chown -R honeypot69:honeypot69 /var/log/tcp-6969-honeypot
+~~~
 
-4. Create a Systemd Service unit file
+&nbsp;
+---
+&nbsp;
 
+### 4. Create a Systemd Service unit file
+~~~
 !@NetOps
 nano /etc/systemd/system/tcp-6969-honeypot.service
+~~~
+
+<br>
 
 Then paste the following
+
+<br>
 
 ~~~
 [Unit]
@@ -189,14 +217,17 @@ SystemCallFilter=~@clock @cpu-emulation
 WantedBy=multi-user.target
 ~~~
 
+&nbsp;
+---
+&nbsp;
 
-5. Then start the service
-
+### 5. Then start the service
+~~~
 !@NetOps
 sudo systemctl daemon-reload
 sudo systemctl start tcp-6969-honeypot.service
 sudo systemctl status tcp-6969-honeypot.service --no-pager
-
+~~~
 
 
 
