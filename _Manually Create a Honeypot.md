@@ -9,6 +9,8 @@ sudo nano /usr/local/bin/tcp-6969-honeypot.py
 Then paste the following contents to the nano shell.
 
 ~~~import asyncio
+#!/usr/bin/env python3
+import asyncio
 import datetime
 import os
 import argparse
@@ -30,10 +32,10 @@ def hexdump(data: bytes) -> str:
   lines = []
   for i in range(0, len(hexs), 32):
     chunk = hexs[i:i+32]
-	b = bytes.fromhex(chunk)
-	printable = ''.join((chr(x) if 32 <= x < 127 else '.') for x in b)
-	lines.append(f'{i//2:08x} {chunk} {printable}')
-	return '\n'.join(lines)
+    b = bytes.fromhex(chunk)
+    printable = ''.join((chr(x) if 32 <= x < 127 else '.') for x in b)
+    lines.append(f'{i//2:08x} {chunk} {printable}')
+    return '\n'.join(lines)
 
 
 ### LOG INFORMATION ABOUT THE ATTACKER
@@ -62,7 +64,7 @@ async def handle(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
   ### SEND MESSAGE TO THE ATTACKER
   try:
     writer.write(b'Welcome to Rivan, you Hacker!!! \r\n')
-	await writer.drain()
+    await writer.drain()
   except Exception:
     pass
 
@@ -81,11 +83,11 @@ async def handle(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
           hf.write(f"\n-- {ts} --\n")
           hf.write(hexdump(data) + "\n")
           
-		  ### RECORD READABLE COPY
+          ### RECORD READABLE COPY
           printable = ''.join((chr(x) if 32 <= x < 127 else '.') for x in data)
           (sess_dir / "printable.log").open("a").write(f"{ts} {printable}\n")
           
-		  ### SEND TARPITTED RESPONSE
+          ### SEND TARPITTED RESPONSE
           try:
             writer.write(b"OK\r\n")
             await writer.drain()
@@ -114,7 +116,7 @@ async def handle(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
     print(f"Listening on {addrs}")
     async with server:
       await server.serve_forever()
-	  
+      
   ### CLI ENTRYPOINT
   if __name__ == "__main__":
     parser = argparse.ArgumentParser()
