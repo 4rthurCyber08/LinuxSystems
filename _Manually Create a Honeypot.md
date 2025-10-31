@@ -35,7 +35,7 @@ def hexdump(data: bytes) -> str:
     b = bytes.fromhex(chunk)
     printable = ''.join((chr(x) if 32 <= x < 127 else '.') for x in b)
     lines.append(f'{i//2:08x} {chunk} {printable}')
-    return '\n'.join(lines)
+  return '\n'.join(lines)
 
 
 ### LOG INFORMATION ABOUT THE ATTACKER
@@ -117,16 +117,16 @@ async def handle(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
     async with server:
       await server.serve_forever()
       
-  ### CLI ENTRYPOINT
-  if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--host", default="0.0.0.0")
-    parser.add_argument("--port", type=int, default=6969)
-    args = parser.parse_args()
-    try:
-      asyncio.run(main(args.host, args.port))
-    except KeyboardInterrupt:
-      pass
+### CLI ENTRYPOINT
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--host", default="0.0.0.0")
+  parser.add_argument("--port", type=int, default=6969)
+  args = parser.parse_args()
+  try:
+    asyncio.run(main(args.host, args.port))
+  except KeyboardInterrupt:
+    pass
 ~~~
 
 > [!NOTE]
