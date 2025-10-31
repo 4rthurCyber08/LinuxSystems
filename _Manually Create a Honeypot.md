@@ -85,7 +85,8 @@ async def handle(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
         
         ### RECORD READABLE COPY
         printable = ''.join((chr(x) if 32 <= x < 127 else '.') for x in data)
-        (sess_dir / "printable.log").open("a").write(f"{ts} {printable}\n")
+        with (sess_dir / "printable.log").open("a") as pf:
+          pf.write(f"{ts} {printable}\n")
         
         ### SEND TARPITTED RESPONSE
         try:
@@ -109,13 +110,13 @@ async def handle(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
     print(f"[+] closed {ip}:{port} -> {sess_dir}")
 
 
-  ### TCP HANDLER
-  async def main(host, port):
-    server = await asyncio.start_server(handle, host, port)
-    addrs = ", ".join(str(sock.getsockname()) for sock in server.sockets)
-    print(f"Listening on {addrs}")
-    async with server:
-      await server.serve_forever()
+### TCP HANDLER
+async def main(host, port):
+  server = await asyncio.start_server(handle, host, port)
+  addrs = ", ".join(str(sock.getsockname()) for sock in server.sockets)
+  print(f"Listening on {addrs}")
+  async with server:
+    await server.serve_forever()
       
 ### CLI ENTRYPOINT
 if __name__ == "__main__":
