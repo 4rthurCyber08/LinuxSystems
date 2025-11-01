@@ -169,7 +169,7 @@ sudo chmod +x /usr/local/bin/tcp-6969-honeypot.py
 ---
 &nbsp;
 
-### 3. Prevent the honeypot server from being conpronised by assigning a nologin account to it.
+### 3. Prevent the honeypot server from being coMpronised by assigning a nologin account to it.
 ~~~
 !@NetOps
 sudo useradd -r -s /sbin/nologin honeypot69 || true
